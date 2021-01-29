@@ -1,0 +1,13 @@
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\bin\Debug\netcoreapp3.1\mine-tank-server.exe
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\bin\Debug\netcoreapp3.1\mine-tank-server.deps.json
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\bin\Debug\netcoreapp3.1\mine-tank-server.runtimeconfig.json
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\bin\Debug\netcoreapp3.1\mine-tank-server.runtimeconfig.dev.json
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\bin\Debug\netcoreapp3.1\mine-tank-server.dll
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\bin\Debug\netcoreapp3.1\mine-tank-server.pdb
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\obj\Debug\netcoreapp3.1\mine-tank-server.csprojAssemblyReference.cache
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\obj\Debug\netcoreapp3.1\mine-tank-server.csproj.CoreCompileInputs.cache
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\obj\Debug\netcoreapp3.1\mine-tank-server.AssemblyInfoInputs.cache
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\obj\Debug\netcoreapp3.1\mine-tank-server.AssemblyInfo.cs
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\obj\Debug\netcoreapp3.1\mine-tank-server.dll
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\obj\Debug\netcoreapp3.1\mine-tank-server.pdb
+E:\workspace\mine-tank-server\mine-tank-server\mine-tank-server\obj\Debug\netcoreapp3.1\mine-tank-server.genruntimeconfig.cache
