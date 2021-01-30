@@ -76,8 +76,7 @@ namespace mine_tank_server
             {
                 MethodInfo mei = typeof(EventHandler).GetMethod("OnDisConnect");
                 object[] ob = { state };
-                mei.
-                    Invoke(null, ob);
+                mei.Invoke(null, ob);
 
                 clientfd.Close();
                 clients.Remove(clientfd);

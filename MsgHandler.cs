@@ -78,11 +78,13 @@ namespace mine_tank_server
         public static void MsgHit(ClientState c, string msgArgs)
         {
             Console.WriteLine("MsgHit " + msgArgs);
+
             string sendStr = "Hit|" + msgArgs;
             foreach (ClientState cs in Program.clients.Values)
             {
                 Program.Send(cs, sendStr);
             }
+            Program.clients.Remove(c.socket);
         }
     }
 }
