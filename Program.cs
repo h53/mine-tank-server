@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace mine_tank_server
 {
-    class ClientState
+    public class ClientState
     {
         public Socket socket;
         public byte[] readBuff = new byte[1024];
@@ -76,7 +76,8 @@ namespace mine_tank_server
             {
                 MethodInfo mei = typeof(EventHandler).GetMethod("OnDisConnect");
                 object[] ob = { state };
-                mei.Invoke(null, ob);
+                mei.
+                    Invoke(null, ob);
 
                 clientfd.Close();
                 clients.Remove(clientfd);
@@ -86,7 +87,7 @@ namespace mine_tank_server
 
             if(count == 0)
             {
-                MethodInfo mei = typeof(EventHandler).GetMethod("OnDisConnect");
+                MethodInfo mei = typeof(EventHandler).GetMethod("OnDisconnect");
                 object[] ob = { state };
                 mei.Invoke(null, ob);
 
@@ -99,13 +100,7 @@ namespace mine_tank_server
             //broadcast
             string recvStr = System.Text.Encoding.Default.GetString(state.readBuff, 0, count);
             Console.WriteLine("Receive " + recvStr);
-            //string sendStr = clientfd.RemoteEndPoint.ToString() + ":" + recvStr;
-            //byte[] sendBytes = System.Text.Encoding.Default.GetBytes(sendStr);
-            //foreach(ClientState cs in clients.Values)
-            //{
-            //    cs.socket.Send(state.readBuff);
-            //}
-            //return true;
+
             string[] split = recvStr.Split('|');
             string msgName = split[0];
             string msgArgs = split[1];
