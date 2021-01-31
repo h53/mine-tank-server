@@ -24,7 +24,7 @@ namespace mine_tank_server
             //Socket
             listenfd = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             //Bind
-            IPAddress ipAdr = IPAddress.Parse("127.0.0.1");
+            IPAddress ipAdr = IPAddress.Parse("0.0.0.0");
             IPEndPoint ipEp = new IPEndPoint(ipAdr, 1234);
             listenfd.Bind(ipEp);
             //listen
