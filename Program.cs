@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -18,6 +19,7 @@ namespace mine_tank_server
     class Program
     {
         static Socket listenfd;
+        static int buffCount = 0;
         public static Dictionary<Socket, ClientState> clients = new Dictionary<Socket, ClientState>();
         public static void Main(string[] args)
         {
@@ -65,13 +67,12 @@ namespace mine_tank_server
             clients.Add(clientfd, state);
         }
 
-        public static bool ReadClientfd(Socket clientfd)
+        public static void ReadClientfd(Socket clientfd)
         {
             ClientState state = clients[clientfd];
-            int count = 0;
             try
             {
-                count = clientfd.Receive(state.readBuff);
+                buffCount = clientfd.Receive(state.readBuff);
             }catch(SocketException ex)
             {
                 MethodInfo mei = typeof(EventHandler).GetMethod("OnDisConnect");
@@ -81,10 +82,10 @@ namespace mine_tank_server
                 clientfd.Close();
                 clients.Remove(clientfd);
                 Console.WriteLine("Receive SocketException " + ex.ToString());
-                return false;
+                return ;
             }
 
-            if(count == 0)
+            if(buffCount == 0)
             {
                 MethodInfo mei = typeof(EventHandler).GetMethod("OnDisconnect");
                 object[] ob = { state };
@@ -93,11 +94,21 @@ namespace mine_tank_server
                 clientfd.Close();
                 clients.Remove(clientfd);
                 Console.WriteLine("Socket Close");
-                return false;
+                return ;
             }
 
+            OnReceiveData(state);
+            return ;
+        }
+
+        private static void OnReceiveData(ClientState state)
+        {
+            if (buffCount <= 2) { return; }
+            Int16 bodyLength = BitConverter.ToInt16(state.readBuff, 0);
+            if (buffCount < 2 + bodyLength) { return; }
             //broadcast
-            string recvStr = System.Text.Encoding.Default.GetString(state.readBuff, 0, count);
+            int end = 2 + bodyLength;
+            string recvStr = System.Text.Encoding.Default.GetString(state.readBuff, 2, end);
             Console.WriteLine("Receive " + recvStr);
 
             string[] split = recvStr.Split('|');
@@ -107,13 +118,20 @@ namespace mine_tank_server
             MethodInfo mi = typeof(MsgHandler).GetMethod(funName);
             object[] o = { state, msgArgs };
             mi.Invoke(null, o);
-            return true;
+
+            int count = buffCount - end;
+            Array.Copy(state.readBuff, end, state.readBuff, 0, count);
+            buffCount -= end;
+            OnReceiveData(state);
         }
 
         public static void Send(ClientState cs, string sendStr)
         {
-            byte[] sendBytes = System.Text.Encoding.Default.GetBytes(sendStr);
-            cs.socket.Send(sendBytes);
+            byte[] bodyByte = System.Text.Encoding.Default.GetBytes(sendStr);
+            Int16 len = (Int16)bodyByte.Length;
+            byte[] headByte = BitConverter.GetBytes(len);
+            byte[] sendByte = headByte.Concat(bodyByte).ToArray();
+            cs.socket.Send(sendByte);
         }
     }
 }

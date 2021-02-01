@@ -38,7 +38,7 @@ namespace mine_tank_server
                     cs.posX + "," +
                     cs.posY + "," +
                     cs.dirX + "," +
-                    cs.dirY + ",";
+                    cs.dirY + "," ;
             }
             Program.Send(c, sendStr);
         }
