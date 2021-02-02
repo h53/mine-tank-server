@@ -22,10 +22,7 @@ namespace mine_tank_server
             c.dirY = dirY;
 
             string sendStr = "Enter|" + msgArgs;
-            foreach(ClientState cs in Program.clients.Values)
-            {
-                Program.Send(cs,sendStr);
-            }
+            BroadCast(sendStr);
         }
 
         public static void MsgList(ClientState c, string msgArgs)
@@ -59,20 +56,14 @@ namespace mine_tank_server
             c.dirY = dirY;
 
             string sendStr = "Move|" + msgArgs;
-            foreach (ClientState cs in Program.clients.Values)
-            {
-                Program.Send(cs, sendStr);
-            }
+            BroadCast(sendStr);
         }
 
         public static void MsgFire(ClientState c, string msgArgs)
         {
             Console.WriteLine("MsgFire " + msgArgs);
             string sendStr = "Fire|" + msgArgs;
-            foreach (ClientState cs in Program.clients.Values)
-            {
-                Program.Send(cs, sendStr);
-            }
+            BroadCast(sendStr);
         }
 
         public static void MsgHit(ClientState c, string msgArgs)
@@ -80,11 +71,30 @@ namespace mine_tank_server
             Console.WriteLine("MsgHit " + msgArgs);
 
             string sendStr = "Hit|" + msgArgs;
+            BroadCast(sendStr);
+            Program.clients.Remove(c.socket);
+        }
+
+        public static void MsgTip(ClientState c,string msgArgs)
+        {
+            Console.WriteLine("MsgTip " + msgArgs);
+            string sendStr = "Tip|" + msgArgs;
+            BroadCast(sendStr);
+        }
+
+        public static void MsgText(ClientState c,string msgArgs)
+        {
+            Console.WriteLine("MsgText " + msgArgs);
+            string sendStr = "Text|" + msgArgs;
+            BroadCast(sendStr);
+        }
+
+        private static void BroadCast(string sendStr)
+        {
             foreach (ClientState cs in Program.clients.Values)
             {
                 Program.Send(cs, sendStr);
             }
-            Program.clients.Remove(c.socket);
         }
     }
 }

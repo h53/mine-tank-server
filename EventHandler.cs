@@ -10,7 +10,7 @@ namespace mine_tank_server
         {
             Console.WriteLine("OnDisconnect");
             string desc = c.socket.RemoteEndPoint.ToString();
-            string sendStr = "Leave|" + desc;
+            string sendStr = "Leave|" + desc + ",";
             foreach(ClientState cs in Program.clients.Values)
             {
                 Program.Send(cs, sendStr);
