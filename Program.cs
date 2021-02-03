@@ -27,7 +27,17 @@ namespace mine_tank_server
             listenfd = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             //Bind
             IPAddress ipAdr = IPAddress.Parse("0.0.0.0");
-            IPEndPoint ipEp = new IPEndPoint(ipAdr, 1234);
+            int port;
+            try
+            {
+                string portStr = Environment.GetEnvironmentVariable("PORT");
+                port = int.Parse(portStr);
+            }catch(ArgumentNullException ex)
+            {
+                Console.WriteLine("no PORT variable found, use default port: 1234");
+                port = 1234;
+            }
+            IPEndPoint ipEp = new IPEndPoint(ipAdr, port);
             listenfd.Bind(ipEp);
             //listen
             listenfd.Listen(0);
