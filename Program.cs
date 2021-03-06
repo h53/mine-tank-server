@@ -34,45 +34,60 @@ namespace mine_tank_server
             writeIdx = 0;
         }
 
-        public void Resize(int size)
-        {
-            if (size < length) return;
-            if (size < initSize) return;
-            int n = 1;
-            while (n < size) n *= 2;
-            capacity = n;
-            byte[] newBytes = new byte[capacity];
-            Array.Copy(bytes, readIdx, newBytes, 0, writeIdx - readIdx);
-            bytes = newBytes;
-            writeIdx = length;
-            readIdx = 0;
-        }
+        //public void Resize(int size)
+        //{
+        //    if (size < length) return;
+        //    if (size < initSize) return;
+        //    int n = 1;
+        //    while (n < size) n *= 2;
+        //    capacity = n;
+        //    byte[] newBytes = new byte[capacity];
+        //    Array.Copy(bytes, readIdx, newBytes, 0, writeIdx - readIdx);
+        //    bytes = newBytes;
+        //    writeIdx = length;
+        //    readIdx = 0;
+        //}
 
         public void CheckAndMoveBytes()
         {
+            Console.WriteLine("check bytes ---------");
             if (length < 8)
             {
+                Console.WriteLine("Check yes ++++++++++");
                 MoveBytes();
             }
         }
 
         public void MoveBytes()
         {
+            Console.Write("MoveBytes, readIdx = " + readIdx);
+            Console.Write(" writeIdx = " + writeIdx);
+            Console.Write(" length = " + length);
+            Console.Write(" remain = " + remain);
+            Console.Write(" size = " + capacity);
+            Console.WriteLine();
             Array.Copy(bytes, readIdx, bytes, 0, length);
             writeIdx = length;
             readIdx = 0;
+
+            Console.Write("++++++++++ readIdx = " + readIdx);
+            Console.Write(" writeIdx = " + writeIdx);
+            Console.Write(" length = " + length);
+            Console.Write(" remain = " + remain);
+            Console.Write(" size = " + capacity);
+            Console.WriteLine();
         }
 
-        public int Write(byte[] bs, int offset, int count)
-        {
-            if (remain < count)
-            {
-                Resize(length + count);
-            }
-            Array.Copy(bs, offset, bytes, writeIdx, count);
-            writeIdx += count;
-            return count;
-        }
+        //public int Write(byte[] bs, int offset, int count)
+        //{
+        //    if (remain < count)
+        //    {
+        //        Resize(length + count);
+        //    }
+        //    Array.Copy(bs, offset, bytes, writeIdx, count);
+        //    writeIdx += count;
+        //    return count;
+        //}
 
         //public int Read(byte[] bs, int offset, int count)
         //{
@@ -158,7 +173,7 @@ namespace mine_tank_server
             ClientState state = clients[clientfd];
             try
             {
-                buffCount = clientfd.Receive(state.readBuff.bytes);
+                buffCount = clientfd.Receive(state.readBuff.bytes,state.readBuff.writeIdx, state.readBuff.remain, SocketFlags.None);
             }catch(SocketException ex)
             {
                 MethodInfo mei = typeof(EventHandler).GetMethod("OnDisConnect");
@@ -182,12 +197,13 @@ namespace mine_tank_server
                 Console.WriteLine("Socket Close");
                 return ;
             }
+            Console.WriteLine("buffcount = " + buffCount);
             state.readBuff.writeIdx += buffCount;
             OnReceiveData(state);
             if (state.readBuff.remain < 8)
             {
+                //state.readBuff.Resize(state.readBuff.length * 2);
                 state.readBuff.MoveBytes();
-                state.readBuff.Resize(state.readBuff.length * 2);
             }
             return ;
         }
@@ -195,7 +211,7 @@ namespace mine_tank_server
         private static void OnReceiveData(ClientState state)
         {
             if (state.readBuff.length <= 2) { return; }
-            Int16 bodyLength = BitConverter.ToInt16(state.readBuff.bytes, 0);
+            Int16 bodyLength = BitConverter.ToInt16(state.readBuff.bytes, state.readBuff.readIdx);
             if (state.readBuff.length < 2 + bodyLength) { return; }
             //broadcast
             state.readBuff.readIdx += 2;
@@ -211,7 +227,7 @@ namespace mine_tank_server
             MethodInfo mi = typeof(MsgHandler).GetMethod(funName);
             object[] o = { state, msgArgs };
             mi.Invoke(null, o);
-
+            
             OnReceiveData(state);
         }
 
