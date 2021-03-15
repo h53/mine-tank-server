@@ -163,8 +163,10 @@ namespace mine_tank_server
         {
             Console.WriteLine("Accepted");
             Socket clientfd = listenfd.Accept();
-            ClientState state = new ClientState();
-            state.socket = clientfd;
+            ClientState state = new ClientState
+            {
+                socket = clientfd
+            };
             clients.Add(clientfd, state);
         }
 
@@ -215,7 +217,7 @@ namespace mine_tank_server
             if (state.readBuff.length < 2 + bodyLength) { return; }
             //broadcast
             state.readBuff.readIdx += 2;
-            string recvStr = System.Text.Encoding.Default.GetString(state.readBuff.bytes, state.readBuff.readIdx, bodyLength);
+            string recvStr = System.Text.Encoding.ASCII.GetString(state.readBuff.bytes, state.readBuff.readIdx, bodyLength);
             state.readBuff.readIdx += bodyLength;
             state.readBuff.CheckAndMoveBytes();
             Console.WriteLine("Receive " + recvStr);
@@ -233,7 +235,7 @@ namespace mine_tank_server
 
         public static void Send(ClientState cs, string sendStr)
         {
-            byte[] bodyByte = System.Text.Encoding.Default.GetBytes(sendStr);
+            byte[] bodyByte = System.Text.Encoding.ASCII.GetBytes(sendStr);
             Int16 len = (Int16)bodyByte.Length;
             byte[] headByte = BitConverter.GetBytes(len);
             byte[] sendByte = headByte.Concat(bodyByte).ToArray();
